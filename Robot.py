@@ -15,7 +15,7 @@ import random
 # cluttered math.
 #
 # the robot class
-class robot:
+class Robot:
 
     # --------
     # init:
