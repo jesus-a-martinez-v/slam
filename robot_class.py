@@ -1,13 +1,11 @@
-from math import *
 import random
 
 
-### ------------------------------------- ###
 # Below, is the robot class
 #
 # This robot lives in 2D, x-y space, and its motion is
 # pointed in a random direction, initially.
-# It moves in a straight line until it comes close to a wall 
+# It moves in a straight line until it comes close to a wall
 # at which point it stops.
 #
 # For measurements, it  senses the x- and y-distance
@@ -16,6 +14,7 @@ import random
 # easier to implement the essentials of SLAM without
 # cluttered math.
 #
+# the robot class
 class robot:
 
     # --------
@@ -25,7 +24,6 @@ class robot:
     #
     def __init__(self, world_size=100.0, measurement_range=30.0,
                  motion_noise=1.0, measurement_noise=1.0):
-        self.measurement_noise = 0.0
         self.world_size = world_size
         self.measurement_range = measurement_range
         self.x = world_size / 2.0
@@ -45,8 +43,8 @@ class robot:
     #
     def move(self, dx, dy):
 
-        x = self.x + dx + self.rand() * self.motion_noise
-        y = self.y + dy + self.rand() * self.motion_noise
+        x = self.x + dx + (self.rand() * self.motion_noise)
+        y = self.y + dy + (self.rand() * self.motion_noise)
 
         if x < 0.0 or x > self.world_size or y < 0.0 or y > self.world_size:
             return False
@@ -61,33 +59,29 @@ class robot:
     #        is of variable length. Set measurement_range to -1 if you want all
     #        landmarks to be visible at all times
     #
-
-    ## TODO: paste your complete the sense function, here
-    ## make sure the indentation of the code is correct
     def sense(self):
-        ''' This function does not take in any parameters, instead it references internal variables
-            (such as self.landamrks) to measure the distance between the robot and any landmarks
+        """ This function does not take in any parameters, instead it references internal variables
+            (such as self.landmarks) to measure the distance between the robot and any landmarks
             that the robot can see (that are within its measurement range).
             This function returns a list of landmark indices, and the measured distances (dx, dy)
             between the robot's position and said landmarks.
             This function should account for measurement_noise and measurement_range.
             One item in the returned list should be in the form: [landmark_index, dx, dy].
-            '''
-
+            """
+        all_landmarks_within_range = self.measurement_range == -1
         measurements = []
 
-        ## TODO: iterate through all of the landmarks in a world
+        for index, (landmark_x, landmark_y) in enumerate(self.landmarks):
+            dx = abs(self.x - landmark_x) + self.rand() * self.measurement_noise
+            dy = abs(self.y - landmark_y) + self.rand() * self.measurement_noise
 
-        ## TODO: For each landmark
-        ## 1. compute dx and dy, the distances between the robot and the landmark
-        ## 2. account for measurement noise by *adding* a noise component to dx and dy
-        ##    - The noise component should be a random value between [-1.0, 1.0)*measurement_noise
-        ##    - Feel free to use the function self.rand() to help calculate this noise component
-        ## 3. If either of the distances, dx or dy, fall outside of the internal var, measurement_range
-        ##    then we cannot record them; if they do fall in the range, then add them to the measurements list
-        ##    as list.append([index, dx, dy]), this format is important for data creation done later
+            is_landmark_within_range = (all_landmarks_within_range or
+                                        (0 <= dx <= self.measurement_range) and
+                                        (0 <= dy <= self.measurement_range))
 
-        ## TODO: return the final, complete list of measurements
+            if is_landmark_within_range:
+                measurements.append([index, dx, dy])
+
         return measurements
 
     # --------
@@ -104,5 +98,3 @@ class robot:
     # called when print(robot) is called; prints the robot's location
     def __repr__(self):
         return 'Robot: [x=%.5f y=%.5f]' % (self.x, self.y)
-
-####### END robot class #######
