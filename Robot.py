@@ -72,12 +72,12 @@ class Robot:
         measurements = []
 
         for index, (landmark_x, landmark_y) in enumerate(self.landmarks):
-            dx = abs(self.x - landmark_x) + self.rand() * self.measurement_noise
-            dy = abs(self.y - landmark_y) + self.rand() * self.measurement_noise
+            dx = (landmark_x - self.x) + (self.rand() * self.measurement_noise)
+            dy = (landmark_y - self.y) + (self.rand() * self.measurement_noise)
 
             is_landmark_within_range = (all_landmarks_within_range or
-                                        (0 <= dx <= self.measurement_range) and
-                                        (0 <= dy <= self.measurement_range))
+                                        (0 <= abs(dx) <= self.measurement_range) and
+                                        (0 <= abs(dy) <= self.measurement_range))
 
             if is_landmark_within_range:
                 measurements.append([index, dx, dy])
