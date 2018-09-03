@@ -1,9 +1,10 @@
-from Robot import Robot
-from math import *
 import random
-import numpy as np
+from math import *
+
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+from Robot import Robot
 
 
 # --------
@@ -13,9 +14,6 @@ import seaborn as sns
 def display_world(world_size, position, landmarks=None):
     # using seaborn, set background grid to gray
     sns.set_style("dark")
-
-    # Plot grid of values
-    world_grid = np.zeros((world_size + 1, world_size + 1))
 
     # Set minor axes in between the labels
     ax = plt.gca()
@@ -63,7 +61,7 @@ def make_data(N, num_landmarks, world_size, measurement_range, motion_noise,
         # make robot and landmarks
         r = Robot(world_size, measurement_range, motion_noise, measurement_noise)
         r.make_landmarks(num_landmarks)
-        seen = [False for row in range(num_landmarks)]
+        seen = [False for _ in range(num_landmarks)]
 
         # guess an initial motion
         orientation = random.random() * 2.0 * pi
@@ -71,7 +69,6 @@ def make_data(N, num_landmarks, world_size, measurement_range, motion_noise,
         dy = sin(orientation) * distance
 
         for k in range(N - 1):
-
             # collect sensor measurements in a list, Z
             Z = r.sense()
 
